@@ -1,0 +1,33 @@
+# Integration tests for CopyPaste analysis components
+#
+
+
+"Copy-paste filter":
+  - do:
+      indices.create:
+        index: copypaste_sample
+        body:
+          settings:
+            index:
+              analysis:
+                analyzer:
+                  my_analyzer:
+                    tokenizer: standard
+                    filter: [ "lowercase", "copypaste" ]
+  - do:
+      indices.analyze:
+        index: copypaste_sample
+        body:
+          analyzer: my_analyzer
+          text: Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+            Sed a ex mi. Maecenas commodo scelerisque felis quis sollicitudin.
+            Sed a ex mi.
+
+  - length: { tokens: 22 }
+  - match: { tokens.0.token: lorem }
+  - match: { tokens.1.token: ipsum }
+  - match: { tokens.2.token: dolor }
+  - match: { tokens.8.token: sed }
+  - match: { tokens.9.token: a }
+  - match: { tokens.10.token: ex }

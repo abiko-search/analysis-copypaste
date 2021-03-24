@@ -1,0 +1,38 @@
+buildscript {
+  repositories {
+    mavenCentral()
+    jcenter()
+    mavenLocal()
+  }
+
+  dependencies {
+    classpath "org.elasticsearch.gradle:build-tools:${elasticsearchVersion}"
+  }
+}
+
+apply plugin: 'java'
+
+compileJava {
+  sourceCompatibility = JavaVersion.VERSION_12
+  targetCompatibility = JavaVersion.VERSION_12
+}
+
+apply plugin: 'elasticsearch.esplugin'
+apply plugin: 'elasticsearch.yaml-rest-test'
+
+group = "org.elasticsearch.plugin.analysis"
+version = "1.0.0"
+
+esplugin {
+  description 'A duplicate text filter plugin'
+  classname 'org.elasticsearch.plugin.analysis.AnalysisCopyPastePlugin'
+  licenseFile rootProject.file('LICENSE.txt')
+  noticeFile rootProject.file('NOTICE.txt')
+}
+
+dependencies {
+  yamlRestTestRuntime "org.apache.logging.log4j:log4j-slf4j-impl:${versions.log4j}"
+  yamlRestTestRuntime "org.apache.logging.log4j:log4j-core:${versions.log4j}"
+}
+
+validateNebulaPom.enabled = false
